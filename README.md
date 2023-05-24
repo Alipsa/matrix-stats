@@ -3,7 +3,9 @@ Statistical functions for Matrix data. E.g correlations, normalizations, and hyp
 
 
 ## Correlations
-Pearson correlation is the default one.
+Correlation is a statistical measure that expresses the extent to which two variables are linearly related.
+The Correlation class can do the most common types of correlation calculations (Pearson, Spearman, and Kendall).
+Pearson correlation is the default one:
 ```groovy
 import static se.alipsa.groovy.stats.Correlation.*
 import java.math.RoundingMode
@@ -11,7 +13,8 @@ import java.math.RoundingMode
 assert 0.95346258924559 == cor([15, 18, 21, 24, 27], [25, 25, 27, 31, 32]).setScale(14, RoundingMode.HALF_EVEN)
 ```
 
-Spearman and Kendall correlations are also supported
+Add a method parameter to get Spearman and Kendall correlations instead e.g:
+
 ```groovy
 import static se.alipsa.groovy.stats.Correlation.*
 import java.math.RoundingMode
@@ -21,10 +24,13 @@ assert 0.45643546458764 == cor([15, 18, 21, 15, 21], [25, 25, 27, 27, 27], SPEAR
 // Kendall
 assert -0.47140452079103173 == cor([12, 2, 1, 12, 2], [1, 4, 7, 1, 0], KENDALL)
 ```
+See
+[CorrelationTest](https://github.com/Alipsa/matrix-stats/blob/main/src/test/groovy/CorrelationTest.groovy) for some examples.
+
 
 ## Normalizations
 Implements various ways of normalizing (scaling) data e.g. 
-scale the values so that the they have a mean of 0 and a standard deviation of 1 
+scale the values so that they have a mean of 0 and a standard deviation of 1 
 It implements 4 different approaches
 - logarithmic normalization
 - Min-Max scaling, Z<sub>i</sub> = ( X<sub>i</sub> - min(X) ) / ( max(X) - min(X) )
@@ -39,6 +45,10 @@ List<BigDecimal> obs = ListConverter.toBigDecimals([1200, 34567, 3456, 12, 3456,
 def expected = [-0.1508444, 0.8147756,  -0.0855572, -0.1852244, -0.0855572, -0.1570664, -0.1505261]
 assert expected == Normalize.meanNorm(obs, 7)
 ```
+
+See
+[NormalizeTest](https://github.com/Alipsa/matrix-stats/blob/main/src/test/groovy/NormalizeTest.groovy) for some examples.
+
 
 ## LinearRegression
 Implements the least squares regression with one independent variable estimating the linear model.
