@@ -27,6 +27,9 @@ class LinearRegression {
 
   BigDecimal slope
   BigDecimal intercept
+  BigDecimal r2
+  BigDecimal interceptStdErr
+  BigDecimal slopeStdErr
 
   LinearRegression(Matrix table, String x, String y) {
     this(table[x] as List<? extends Number>, table[y] as List<? extends Number>)
@@ -57,6 +60,27 @@ class LinearRegression {
     BigDecimal interceptNominator = ySummed - slope * xSummed
     BigDecimal interceptDenominator = numberOfDataValues
     intercept = interceptNominator / interceptDenominator
+
+    BigDecimal xBar = xSummed / numberOfDataValues
+    BigDecimal yBar = ySummed / numberOfDataValues
+
+    BigDecimal xxbar = 0.0, yybar = 0.0, xybar = 0.0
+    BigDecimal rss = 0.0     // residual sum of squares
+    BigDecimal ssr = 0.0     // regression sum of squares
+    for (int i = 0; i < numberOfDataValues; i++) {
+      xxbar += (x[i] - xBar) * (x[i] - xBar)
+      yybar += (y[i] - yBar) * (y[i] - yBar)
+      xybar += (x[i] - xBar) * (y[i] - yBar)
+      BigDecimal fit = predict(x[i])
+      rss += (fit - y[i]) * (fit - y[i])
+      ssr += (fit - yBar) * (fit - yBar)
+    }
+    int degreesOfFreedom = numberOfDataValues - 2
+    r2 = ssr / yybar
+    BigDecimal svar  = rss / degreesOfFreedom
+    def slopeVar = svar / xxbar
+    slopeStdErr = Math.sqrt(slopeVar)
+    interceptStdErr = Math.sqrt(svar/numberOfDataValues + xBar * xBar * slopeVar)
   }
 
   BigDecimal predict(Number dependentVariable) {
@@ -97,6 +121,66 @@ class LinearRegression {
 
   BigDecimal getIntercept(int numberOfDecimals) {
     return intercept.setScale(numberOfDecimals, RoundingMode.HALF_EVEN)
+  }
+
+  /**
+   * R squared (R2) is a regression error metric that justifies the performance of the model.
+   * It represents the value of how much the independent variables are able to describe the value
+   * for the response/target variable.
+   * Thus, an R-squared model describes how well the target variable is explained by the combination
+   * of the independent variables as a single unit. The R squared value ranges between 0 to 1
+   *
+   * This is equivalent to the following in R:
+   * <code><pre>
+   * x <- c(2, 3, 5, 7, 9, 11, 14)
+   * y <- c(4.02, 5.44, 7.12, 10.88, 15.10, 20.91, 26.02)
+   * model <- lm(y ~ x)
+   * r2 <- summary(model)$r.squared
+  */
+  BigDecimal getRsquared() {
+    return r2
+  }
+
+  BigDecimal getRsquared(int numberOfDecimals) {
+    return getRsquared().setScale(numberOfDecimals, RoundingMode.HALF_EVEN)
+  }
+
+  /**
+   * Returns the standard error of the estimate for the intercept.
+   * This is equivalent to the following in R:
+   * <code><pre>
+   * x <- c(2, 3, 5, 7, 9, 11, 14)
+   * y <- c(4.02, 5.44, 7.12, 10.88, 15.10, 20.91, 26.02)
+   * model <- lm(y ~ x)
+   * interceptStdErr <- sqrt(diag(vcov(model)))[1])
+   * </pre></code>
+   * @return the standard error of the estimate for the intercept
+   */
+  BigDecimal getInterceptStdErr() {
+    return interceptStdErr
+  }
+
+  BigDecimal getInterceptStdErr(int numberOfDecimals) {
+    return getInterceptStdErr().setScale(numberOfDecimals, RoundingMode.HALF_EVEN)
+  }
+
+  /**
+   * Returns the standard error of the estimate for the slope.
+   * This is equivalent to the following in R:
+   * <code><pre>
+   * x <- c(2, 3, 5, 7, 9, 11, 14)
+   * y <- c(4.02, 5.44, 7.12, 10.88, 15.10, 20.91, 26.02)
+   * model <- lm(y ~ x)
+   * slopeStdErr <- sqrt(diag(vcov(model)))[2])
+   * </pre></code>
+   * @return the standard error of the estimate for the slope
+   */
+  BigDecimal getSlopeStdErr() {
+    return slopeStdErr
+  }
+
+  BigDecimal getSlopeStdErr(int numberOfDecimals) {
+    return getSlopeStdErr().setScale(numberOfDecimals, RoundingMode.HALF_EVEN)
   }
 
   @Override
