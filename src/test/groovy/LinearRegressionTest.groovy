@@ -35,17 +35,23 @@ class LinearRegressionTest {
 
   /**
    * similar code in R
-   * library("se.alipsa:rideutils")
-   * x <- c(2, 3, 5, 7, 9, 11, 14)
-   * y <- c(4.02, 5.44, 7.12, 10.88, 15.10, 20.91, 26.02)
-   *
-   * model <- lm(y ~ x)
-   * print(coef(model))
-   * print(predict(model, newdata = data.frame(x = c(13, 15))))
-   * viewPlot({
-   *   plot(x,y)
-   *   abline(model)
-   * })
+   * <code><pre>
+   *   library("se.alipsa:rideutils")
+   *   x <- c(2, 3, 5, 7, 9, 11, 14)
+   *   y <- c(4.02, 5.44, 7.12, 10.88, 15.10, 20.91, 26.02)
+   *   model <- lm(y ~ x)
+   *   print(model)
+   *   cf <- coef(model)
+   *   print(cf)
+   *   print(paste("R2 =", summary(model)$r.squared))
+   *   print(paste("intercept std err =", sqrt(diag(vcov(model)))[1]))
+   *   print(paste("slope std err =", sqrt(diag(vcov(model)))[2]))
+   *   viewPlot({
+   *     plot(x,y)
+   *     abline(model)
+   *   })
+   *   print(predict(model, newdata = data.frame(x = c(13, 15))))
+   * </pre></code>
    */
   @Test
   void testLinearRegressionFromMatrix() {
