@@ -57,6 +57,7 @@ class LinearRegressionTest {
 
     assertEquals(-0.98130982, model.getIntercept(8))
     assertEquals(1.88939547, model.getSlope(8))
+    assertEquals("Y = 1.89X - 0.98", model.toString())
     def predictions = model.predict([13, 15], 8)
     assertEquals(23.58083123, predictions[0])
     assertEquals(27.35962217, predictions[1])

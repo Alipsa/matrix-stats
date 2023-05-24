@@ -98,4 +98,9 @@ class LinearRegression {
   BigDecimal getIntercept(int numberOfDecimals) {
     return intercept.setScale(numberOfDecimals, RoundingMode.HALF_EVEN)
   }
+
+  @Override
+  String toString() {
+    return "Y = ${getSlope(2)}X ${intercept > 0 ? '+' : '-'} ${getIntercept(2).abs()}"
+  }
 }
