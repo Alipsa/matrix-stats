@@ -1,4 +1,4 @@
-package se.alipsa.groovy.stattest.contingency
+package se.alipsa.groovy.stats.contingency
 
 /**
  * Barnard’s test is an exact test used in the analysis of 2 × 2 contingency tables with one margin fixed.
