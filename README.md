@@ -43,7 +43,7 @@ import se.alipsa.groovy.matrix.ListConverter
 import se.alipsa.groovy.stats.Normalize
 List<BigDecimal> obs = ListConverter.toBigDecimals([1200, 34567, 3456, 12, 3456, 985, 1211])
 def expected = [-0.1508444, 0.8147756,  -0.0855572, -0.1852244, -0.0855572, -0.1570664, -0.1505261]
-assert expected == Normalize.meanNorm(obs, 7)
+assert expected == Normalize.meanNorm(obs, 7) // 7 is the number of decimals
 ```
 
 See
@@ -67,7 +67,8 @@ def model = new LinearRegression(x, y)
 // )
 // model = new LinearRegression(table, 'x', 'y')
 
-assert -6.23971066 == model.intercept.setScale(8, RoundingMode.HALF_EVEN)
-assert 2.81388732 == model.slope.setScale(8, RoundingMode.HALF_EVEN)
-assert 30.34082454 == model.predict(13).setScale(8, RoundingMode.HALF_EVEN)
+// note: 8 is is the number of decimals to round the result to
+assert -6.23971066 == model.getIntercept(8) 
+assert 2.81388732 == model.getSlope(8)
+assert 30.34082454 == model.predict(13, 8)
 ```

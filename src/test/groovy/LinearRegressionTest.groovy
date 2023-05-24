@@ -55,10 +55,12 @@ class LinearRegressionTest {
     )
     def model = new LinearRegression(table, 'x', 'y')
 
-    assertEquals(-0.98130982, model.intercept.setScale(8, RoundingMode.HALF_EVEN))
-    assertEquals(1.88939547, model.slope.setScale(8, RoundingMode.HALF_EVEN))
-    def predictions = model.predict([13, 15])
-    assertEquals(23.58083123, predictions[0].setScale(8, RoundingMode.HALF_EVEN))
-    assertEquals(27.35962217, predictions[1].setScale(8, RoundingMode.HALF_EVEN))
+    assertEquals(-0.98130982, model.getIntercept(8))
+    assertEquals(1.88939547, model.getSlope(8))
+    def predictions = model.predict([13, 15], 8)
+    assertEquals(23.58083123, predictions[0])
+    assertEquals(27.35962217, predictions[1])
+    assertEquals(23.58083123, model.predict(13, 8))
+    assertEquals(model.predict([-1, 15])[0], model.predict(-1))
   }
 }

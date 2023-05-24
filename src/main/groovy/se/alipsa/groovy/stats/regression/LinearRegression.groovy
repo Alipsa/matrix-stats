@@ -3,6 +3,8 @@ package se.alipsa.groovy.stats.regression
 import se.alipsa.groovy.matrix.Matrix
 import se.alipsa.groovy.matrix.Stat
 
+import java.math.RoundingMode
+
 /**
  * Linear regression, also known as Simple Linear Regression is a regression algorithm that models the
  * relationship between a dependent variable and one independent variable.
@@ -32,7 +34,7 @@ class LinearRegression {
 
   LinearRegression(List<? extends Number> x, List<? extends Number> y) {
     if (x.size() != y.size()) {
-      throw new IllegalArgumentException("Must have equal number of X and Y data points")
+      throw new IllegalArgumentException("Must have equal number of X and Y data points for a linear regression")
     }
 
     Integer numberOfDataValues = x.size()
@@ -61,6 +63,10 @@ class LinearRegression {
     return (slope * dependentVariable) + intercept
   }
 
+  BigDecimal predict(Number dependentVariable, int numberOfDecimals) {
+    return predict(dependentVariable).setScale(numberOfDecimals, RoundingMode.HALF_EVEN)
+  }
+
   List<BigDecimal> predict(List<Number> dependentVariables) {
     List<BigDecimal> predictions = []
     dependentVariables.each {
@@ -69,11 +75,27 @@ class LinearRegression {
     return predictions
   }
 
+  List<BigDecimal> predict(List<Number> dependentVariables, int numberOfDecimals) {
+    List<BigDecimal> predictions = []
+    dependentVariables.each {
+      predictions << predict(it, numberOfDecimals)
+    }
+    return predictions
+  }
+
   BigDecimal getSlope() {
     return slope
   }
 
+  BigDecimal getSlope(int numberOfDecimals) {
+    return slope.setScale(numberOfDecimals, RoundingMode.HALF_EVEN)
+  }
+
   BigDecimal getIntercept() {
     return intercept
+  }
+
+  BigDecimal getIntercept(int numberOfDecimals) {
+    return intercept.setScale(numberOfDecimals, RoundingMode.HALF_EVEN)
   }
 }
