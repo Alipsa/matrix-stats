@@ -8,7 +8,7 @@ import java.math.RoundingMode
 /**
  * Linear regression, also known as Simple Linear Regression is a regression algorithm that models the
  * relationship between a dependent variable and one independent variable.
- * A linear regression model shows a relationship that is linear or a sloped straight line.
+ * A linear regression model shows a relationship that is linear i.e. a sloped straight line in a carthesian grid.
  *
  * In Linear Regression, the dependent variable must be a real or continuous value.
  * However, you can measure the independent variable on continuous or categorical values.
@@ -68,12 +68,12 @@ class LinearRegression {
     BigDecimal rss = 0.0     // residual sum of squares
     BigDecimal ssr = 0.0     // regression sum of squares
     for (int i = 0; i < numberOfDataValues; i++) {
-      xxbar += (x[i] - xBar) * (x[i] - xBar)
-      yybar += (y[i] - yBar) * (y[i] - yBar)
+      xxbar += (x[i] - xBar) ** 2
+      yybar += (y[i] - yBar) ** 2
       xybar += (x[i] - xBar) * (y[i] - yBar)
       BigDecimal fit = predict(x[i])
-      rss += (fit - y[i]) * (fit - y[i])
-      ssr += (fit - yBar) * (fit - yBar)
+      rss += (fit - y[i]) ** 2
+      ssr += (fit - yBar) ** 2
     }
     int degreesOfFreedom = numberOfDataValues - 2
     r2 = ssr / yybar
