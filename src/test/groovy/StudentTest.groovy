@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test
 import se.alipsa.groovy.datasets.*
+import se.alipsa.groovy.matrix.Matrix
 import se.alipsa.groovy.stats.Student
 
 import static org.junit.jupiter.api.Assertions.*
@@ -69,5 +70,48 @@ class StudentTest {
     assertEquals(0.12014461, t.getP(8))
     assertEquals(14.33333333, t.getMean(8))
     assertEquals(1.87878788, t.getVar(8))
+  }
+
+  /**
+   * Equivalent code in R:
+   * <code><pre>
+   * data <- data.frame(score = c(85 ,85, 78, 78, 92, 94, 91, 85, 72, 97,
+   * 84, 95, 99, 80, 90, 88, 95, 90, 96, 89,
+   * 84, 88, 88, 90, 92, 93, 91, 85, 80, 93,
+   * 97, 100, 93, 91, 90, 87, 94, 83, 92, 95),
+   * group = c(rep('pre', 20), rep('post', 20)))
+   * t.test(score ~ group, data = data, paired = TRUE)
+   *
+   * Paired t-test
+   *
+   * data:  score by group
+   * t = 1.588, df = 19, p-value = 0.1288
+   * alternative hypothesis: true difference in means is not equal to 0
+   * 95 percent confidence interval:
+   * -0.6837307  4.9837307
+   * sample estimates:
+   * mean of the differences
+   * 2.15
+   * </pre>
+   * </code>
+   */
+  @Test
+  void testPaired() {
+    def data = Matrix.create(
+        score: [85 ,85, 78, 78, 92, 94, 91, 85, 72, 97,
+                84, 95, 99, 80, 90, 88, 95, 90, 96, 89,
+                84, 88, 88, 90, 92, 93, 91, 85, 80, 93,
+                97, 100, 93, 91, 90, 87, 94, 83, 92, 95],
+        group: ['pre']*20 + ['post']*20,
+        [Integer, String]
+    )
+    def pre = data.subset('group', {it == 'pre'})
+    def post = data.subset('group', {it == 'post'})
+    def result = Student.pairedTTest(post['score'], pre['score'])
+    println(result)
+    assertEquals(1.58801321, result.getT(8), 't statistic')
+    assertEquals(19, result.getDf() as Integer, 'Degrees of freedom')
+    assertEquals(0.128785661, result.getP(9), 'P value')
+    assertEquals(2.15, result.mean1 - result.mean2, 'mean of the differences')
   }
 }

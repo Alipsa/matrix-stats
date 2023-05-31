@@ -31,6 +31,56 @@ import java.math.RoundingMode
 class Student {
 
   /**
+   * The paired samples t-test is used to compare the means between two related groups of samples.
+   * In this case, you have two values (i.e., pair of values) for the same samples.
+   *
+   * @param first the values for the first condition
+   * @param second the values for the second condition
+   * @return a PairedResult containing all relevant statistics of the t-test
+   */
+  static PairedResult pairedTTest(List<? extends Number> first, List<? extends Number> second) {
+    Integer n1 = first.size()
+    Integer n2 = second.size()
+    if (n1 != n2) {
+      throw new IllegalArgumentException("The two lists of values are of different size")
+    }
+    BigDecimal mean1 = Stat.mean(first)
+    BigDecimal mean2 = Stat.mean(second)
+    BigDecimal var1 = Stat.variance(first, true)
+    BigDecimal var2 = Stat.variance(second, true)
+    BigDecimal sd1 = Math.sqrt(var1 as double)
+    BigDecimal sd2 = Math.sqrt(var2 as double)
+    def df = n1 - 1
+
+    double cov = 0.0
+    for (int j = 0; j < n1; j++) {
+      cov += (first[j] - mean1) * (second[j] - mean2)
+    }
+    cov /= df
+    // sample standard deviation of the differences
+    double sd = Math.sqrt((var1 + var2 - 2.0 * cov) / n1)
+    def t = (mean1 - mean2) / sd
+
+    def tTest = new TTest()
+    def p = tTest.pairedTTest(ListConverter.toDoubleArray(first), ListConverter.toDoubleArray(second))
+    PairedResult result = new PairedResult()
+    result.description = "Paired t-test"
+    result.tVal = t
+    result.n1 = n1
+    result.n2 = n2
+    result.mean1 = mean1
+    result.mean2 = mean2
+    result.var1 = var1
+    result.var2 = var2
+    result.sd = sd
+    result.sd1 = sd1
+    result.sd2 = sd2
+    result.pVal = p
+    result.df = df
+    return result
+  }
+
+  /**
    * An Independent Samples t-test compares the means for two groups.
    * @param first
    * @param second
@@ -295,6 +345,31 @@ class Student {
       ${getDescription()}
       t = ${getT(3)}, df = ${getDf()}, p = ${getP(3)}
       mean = ${getMean(3)}, size = ${getN()}, sd = ${getSd(3)}
+      """.stripIndent()
+    }
+  }
+
+  static class PairedResult extends Result {
+    BigDecimal sd
+
+    /**
+     * @return the sample standard deviation of the differences
+     */
+    BigDecimal getSd() {
+      return sd
+    }
+
+    BigDecimal getSd(int numberOfDecimals) {
+      return getSd().setScale(numberOfDecimals, RoundingMode.HALF_EVEN)
+    }
+
+    @Override
+    String toString() {
+      return """
+      ${getDescription()}
+      t = ${getT(3)}, df = ${getDf()}, p = ${getP(4)}, sd diff = ${getSd(3)}
+      x: mean = ${getMean1(3)}, size = ${getN1()}, sd = ${getSd1(3)}
+      y: mean = ${getMean2(3)}, size = ${getN2()}, sd = ${getSd2(3)} 
       """.stripIndent()
     }
   }
