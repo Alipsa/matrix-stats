@@ -3,6 +3,22 @@
 # matrix-stats
 Statistical functions for Matrix data. E.g correlations, normalizations, regressions, and hypothesis tests.
 
+## Using the dependency
+matrix-stats is available from maven central
+
+Groovy:
+```groovy
+implementation "se.alipsa.groovy:matrix-stats:1.0.0"
+```
+
+Maven:
+```xml
+<dependency>
+    <groupId>se.alipsa.groovy</groupId>
+    <artifactId>matrix-stats</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
 
 ## Correlations
 Correlation is a statistical measure that expresses the extent to which two variables are linearly related.
